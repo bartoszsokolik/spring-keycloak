@@ -1,0 +1,16 @@
+keycloak:
+  auth-server-url: http://localhost:8080/auth
+  realm: SpringBootKeycloak
+  resource: login-app
+#  public-client: true
+  enabled: true
+  bearer-only: true
+  credentials:
+    secret: fa1b87f7-6903-4bfd-b59a-2f85ba744717
+
+server:
+  port: 8081
+
+external:
+  keycloak:
+    url: 'http://localhost:8080/auth/realms/SpringBootKeycloak/protocol/openid-connect/'

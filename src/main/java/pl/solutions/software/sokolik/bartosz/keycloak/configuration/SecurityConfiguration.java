@@ -37,86 +37,90 @@ import org.springframework.web.context.request.ServletRequestAttributes;
     excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, pattern = "org.keycloak.adapters.springsecurity.management.HttpSessionManager"))
 public class SecurityConfiguration extends KeycloakWebSecurityConfigurerAdapter {
 
-    private static final List<String> BASE_PATHS = List.of(
-        "/v2/api-docs",
-        "/swagger-ui.html",
-        "swagger-resources",
-        "/webjars/**",
-        "/configuration/**",
-        "/healthcheck/**"
-    );
+  private static final List<String> BASE_PATHS = List.of(
+      "/v2/api-docs",
+      "/swagger-ui.html",
+      "swagger-resources",
+      "/webjars/**",
+      "/configuration/**",
+      "/healthcheck/**",
+      "/external",
+      "/token",
+      "/test"
+  );
 
-    @Autowired
-    private KeycloakClientRequestFactory keycloakClientRequestFactory;
+  @Autowired
+  private KeycloakClientRequestFactory keycloakClientRequestFactory;
 
-    @Bean
-    public GrantedAuthoritiesMapper grantedAuthoritiesMapper() {
-        return new SimpleAuthorityMapper();
-    }
+  @Bean
+  public GrantedAuthoritiesMapper grantedAuthoritiesMapper() {
+    return new SimpleAuthorityMapper();
+  }
 
-    @Bean
-    public KeycloakSpringBootConfigResolver keycloakConfigResolver() {
-        return new KeycloakSpringBootConfigResolver();
-    }
+  @Bean
+  public KeycloakSpringBootConfigResolver keycloakConfigResolver() {
+    return new KeycloakSpringBootConfigResolver();
+  }
 
-    @Bean
-    @Override
-    protected SessionAuthenticationStrategy sessionAuthenticationStrategy() {
-        return new NullAuthenticatedSessionStrategy();
-    }
+  @Bean
+  @Override
+  protected SessionAuthenticationStrategy sessionAuthenticationStrategy() {
+    return new NullAuthenticatedSessionStrategy();
+  }
 
-    @Bean
-    @Scope(scopeName = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
-    public KeycloakAuthenticationToken getKeycloakAuthenticationToken() {
-        return ((KeycloakAuthenticationToken) getRequest().getUserPrincipal());
-    }
+  @Bean
+  @Scope(scopeName = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
+  public KeycloakAuthenticationToken getKeycloakAuthenticationToken() {
+    return ((KeycloakAuthenticationToken) getRequest().getUserPrincipal());
+  }
 
-    @Bean
-    @Scope(scopeName = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
-    public KeycloakSecurityContext getKeycloakSecurityContext() {
-        return getKeycloakAuthenticationToken().getAccount().getKeycloakSecurityContext();
-    }
+  @Bean
+  @Scope(scopeName = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
+  public KeycloakSecurityContext getKeycloakSecurityContext() {
+    return getKeycloakAuthenticationToken().getAccount().getKeycloakSecurityContext();
+  }
 
-    @Bean
-    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public KeycloakRestTemplate keycloakRestTemplate() {
-        return new KeycloakRestTemplate(keycloakClientRequestFactory);
-    }
+  @Bean
+  @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  public KeycloakRestTemplate keycloakRestTemplate() {
+    return new KeycloakRestTemplate(keycloakClientRequestFactory);
+  }
 
-    private HttpServletRequest getRequest() {
-        return ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-    }
+  private HttpServletRequest getRequest() {
+    return ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
+        .getRequest();
+  }
 
-    @Override
-    protected KeycloakAuthenticationProvider keycloakAuthenticationProvider() {
-        KeycloakAuthenticationProvider keycloakAuthenticationProvider = super.keycloakAuthenticationProvider();
-        keycloakAuthenticationProvider.setGrantedAuthoritiesMapper(grantedAuthoritiesMapper());
-        return keycloakAuthenticationProvider;
-    }
+  @Override
+  protected KeycloakAuthenticationProvider keycloakAuthenticationProvider() {
+    KeycloakAuthenticationProvider keycloakAuthenticationProvider = super.keycloakAuthenticationProvider();
+    keycloakAuthenticationProvider.setGrantedAuthoritiesMapper(grantedAuthoritiesMapper());
+    return keycloakAuthenticationProvider;
+  }
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) {
-        auth.authenticationProvider(keycloakAuthenticationProvider());
-    }
+  @Override
+  protected void configure(AuthenticationManagerBuilder auth) {
+    auth.authenticationProvider(keycloakAuthenticationProvider());
+  }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        super.configure(http);
-        http.
-            csrf().disable()
-            .sessionManagement()
-            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            .sessionAuthenticationStrategy(sessionAuthenticationStrategy())
-            .and()
-            .authorizeRequests()
-            .anyRequest()
-            .fullyAuthenticated();
-    }
+  @Override
+  protected void configure(HttpSecurity http) throws Exception {
+    super.configure(http);
+    http.
+        csrf().disable()
+        .sessionManagement()
+        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        .sessionAuthenticationStrategy(sessionAuthenticationStrategy())
+        .and()
+        .authorizeRequests()
+        .anyRequest()
+        .fullyAuthenticated();
+  }
 
-    @Override
-    public void configure(WebSecurity web) {
-        web.ignoring().antMatchers(BASE_PATHS.toArray(String[]::new));
-    }
+  @Override
+  public void configure(WebSecurity web) {
+    web.ignoring().antMatchers(BASE_PATHS.toArray(String[]::new));
+  }
 //    @Override
 //    protected void configure(HttpSecurity http) throws Exception {
 //        super.configure(http);
