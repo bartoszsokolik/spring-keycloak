@@ -14,5 +14,7 @@ public interface KeycloakService {
       @Field("username") String username,
       @Field("password") String password,
       @Field("client_id") String clientId,
-      @Field("grant_type") String grantType);
+      @Field("grant_type") String grantType,
+      @Field("client_secret") String secret);
+
 }

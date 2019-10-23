@@ -19,6 +19,7 @@ import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -33,6 +34,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 @ComponentScan(basePackageClasses = KeycloakSecurityComponents.class,
     excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, pattern = "org.keycloak.adapters.springsecurity.management.HttpSessionManager"))
 public class SecurityConfiguration extends KeycloakWebSecurityConfigurerAdapter {
@@ -44,9 +46,8 @@ public class SecurityConfiguration extends KeycloakWebSecurityConfigurerAdapter 
       "/webjars/**",
       "/configuration/**",
       "/healthcheck/**",
-      "/external",
-      "/token",
-      "/test"
+      "/login",
+      "/register"
   );
 
   @Autowired
