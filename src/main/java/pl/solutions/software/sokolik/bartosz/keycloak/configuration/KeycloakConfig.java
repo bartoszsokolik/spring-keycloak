@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import pl.solutions.software.sokolik.bartosz.keycloak.service.KeycloakService;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
 @Configuration
@@ -45,6 +46,7 @@ public class KeycloakConfig {
     OkHttpClient okHttpClient = new OkHttpClient();
     return new Retrofit.Builder()
         .baseUrl(authUrl)
+        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         .addConverterFactory(JacksonConverterFactory.create(objectMapper))
         .client(okHttpClient)
         .build()
@@ -70,6 +72,4 @@ public class KeycloakConfig {
   public RealmResource realmResource(Keycloak keycloak) {
     return keycloak.realm(realm);
   }
-
-
 }

@@ -46,8 +46,9 @@ public class SecurityConfiguration extends KeycloakWebSecurityConfigurerAdapter 
       "/webjars/**",
       "/configuration/**",
       "/healthcheck/**",
-      "/login",
-      "/register"
+      "/error",
+      "/api/users/login",
+      "/api/users/register"
   );
 
   @Autowired
@@ -122,13 +123,4 @@ public class SecurityConfiguration extends KeycloakWebSecurityConfigurerAdapter 
   public void configure(WebSecurity web) {
     web.ignoring().antMatchers(BASE_PATHS.toArray(String[]::new));
   }
-//    @Override
-//    protected void configure(HttpSecurity http) throws Exception {
-//        super.configure(http);
-//        http.authorizeRequests()
-//            .antMatchers("/external")
-//            .permitAll()
-//            .antMatchers("/customers*")
-//            .hasRole("user");
-//    }
 }

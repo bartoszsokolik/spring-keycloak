@@ -6,7 +6,7 @@ keycloak:
   enabled: true
   bearer-only: true
   credentials:
-    secret: fa1b87f7-6903-4bfd-b59a-2f85ba744717
+    secret: d3c9971d-9de4-43a2-9e9b-c6e2cf026ba3
 
 server:
   port: 8081

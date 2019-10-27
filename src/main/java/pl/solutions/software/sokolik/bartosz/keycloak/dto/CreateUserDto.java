@@ -7,20 +7,17 @@ import lombok.Value;
 
 @Value
 @AllArgsConstructor(onConstructor_ = @JsonCreator)
-public class UserDto {
-
-  @JsonProperty("id")
-  private String id;
+public class CreateUserDto {
 
   @JsonProperty("username")
   private String username;
 
+  @JsonProperty("password")
+  private String password;
+
   @JsonProperty("email")
   private String email;
 
-  @JsonProperty("createdTimestamp")
-  private Long createdTimestamp;
 
-  @JsonProperty("enabled")
-  private Boolean enabled;
+
 }
